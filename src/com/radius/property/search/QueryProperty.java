@@ -6,7 +6,8 @@ import java.util.List;
 //TableName: properties (id, latitude, longitude, price, bedroom, bathroom)
 public class QueryProperty {
 
-    private static final String QUERY = "select * from properties where %latitude% and %price% and %bedroom% and %bathroom%" ;
+    //assuming all properties are stored in table named 'properties'
+    private static final String QUERY = "select * from properties where %latitude% and %price% and %bedroom% and %bathroom%";
 
     public static List<Property> getPropertiesFromDB (Constraint constraint) {
         List<Property> result = null;
@@ -14,27 +15,27 @@ public class QueryProperty {
         String bedroom = "";
         String bathroom = "";
 
-        double min = constraint.getLatitude() - (Constraint.DISTANCE_RANGE * 1.1508/60);
-        double max = constraint.getLatitude() + (Constraint.DISTANCE_RANGE * 1.1508/60);
+        double minDistance = constraint.getLatitude() - (Constraint.DISTANCE_RANGE * 1.1508/60);
+        double maxDistance = constraint.getLatitude() + (Constraint.DISTANCE_RANGE * 1.1508/60);
 
-        String latitude = " latitude between " + min + " and " + max;
+        String latitude = " latitude between " + minDistance + " and " + maxDistance;
 
-        String price = "price between " + constraint.getMinPrice() + " and " + constraint.getMaxBathroom();
+        String price = "price between " + constraint.getMinPrice()*.75 + " and " + constraint.getMaxPrice()*1.25;
 
         if (constraint.getMinBedroom() != null && constraint.getMaxBedroom() != null) {
-            bedroom += " bedroom > " + constraint.getMinBedroom() + " and " + " bedroom < " + constraint.getMaxBedroom();
+            bedroom += " bedroom > " + (constraint.getMinBedroom()-2) + " and " + " bedroom < " + constraint.getMaxBedroom()+2;
         } else if (constraint.getMinBedroom() != null) {
-            bedroom += " bedroom > " + constraint.getMinBedroom();
+            bedroom += " bedroom > " + (constraint.getMinBedroom()-2);
         } else if (constraint.getMaxBedroom() != null) {
-            bedroom += " bedroom < " + constraint.getMaxBedroom();
+            bedroom += " bedroom < " + (constraint.getMaxBedroom()+2);
         }
 
         if (constraint.getMinBedroom() != null && constraint.getMaxBedroom() != null) {
-            bathroom += " bathroom > " + constraint.getMinBathroom() + " and " + " bathroom < " + constraint.getMaxBathroom();
+            bathroom += " bathroom > " + (constraint.getMinBathroom()-2) + " and " + " bathroom < " + (constraint.getMaxBathroom()+2);
         } else if (constraint.getMinBedroom() != null) {
-            bathroom += " bathroom > " + constraint.getMinBathroom();
+            bathroom += " bathroom > " + (constraint.getMinBathroom()-2);
         } else if (constraint.getMaxBedroom() != null) {
-            bathroom += " bathroom < " + constraint.getMaxBathroom();
+            bathroom += " bathroom < " + (constraint.getMaxBathroom()+2);
         }
 
         String query = QueryProperty.QUERY
@@ -43,11 +44,9 @@ public class QueryProperty {
                 .replace("%bedroom%", bedroom)
                 .replace("%bathroom%", bathroom);
 
-        /*
 
+        //assumption execute method will fetch the property from SQL DB for the given query
         result = execute(query);
-
-        */
 
         return result;
     }

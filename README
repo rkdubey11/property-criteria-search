@@ -1,0 +1,27 @@
+**files**
+- Constraint.java: class to store constraint attributes
+- Property.java : class to store property attributes
+- QueryProperty.java: fetch results from DB
+-  Search.java: process the db results, assign the score and return results with score >= 40
+
+
+**assumption**
+- attributes are indexed in DB for fast retrieval of data
+- min bedroom = maxBedroom-2 for db query when not given
+- max bedroom = minBedroom+2 for db query when not given
+- min bathroom = maxBathroom-2 for db query when not given
+- max bathroom = minBathroom+2 for db query when not given
+
+
+**approach**
+1. fetch the data from db based on search criteria such that property lat/lng falls within 10mile, budget, bedrooms, bathrooms
+   are within specified range
+2. results in step 1 contains the probable properties for which we will calculate the score.
+3. return properties(along with score)for which score>=40
+4. score calculation assumptions
+  - when min bedroom not given in criteria value which is <= max bedroom, will contribute 20% to score
+  - when max bedroom not given in criteria value which is >= min bedroom, will contribute 20% to score
+  - when min bathroom not given in criteria value which is <= max bathroom, will contribute 20% to score
+  - when max bathroom not given in criteria value which is >= min bathroom, will contribute 20% to score
+
+

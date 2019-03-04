@@ -10,6 +10,7 @@ public class Constraint {
 
 
 
+    private Long id;
     private Double latitude;
     private Double longitude;
 
@@ -23,6 +24,10 @@ public class Constraint {
     private Long minBathroom;
     private Long maxBathroom;
 
+
+    public Long getId() {
+        return id;
+    }
 
     public Double getLatitude() {
         return latitude;
@@ -88,6 +93,8 @@ public class Constraint {
         this.maxBathroom = maxBathroom;
     }
 
+
+    //method to check validity of constraint attributes
     public Boolean isValid() {
         if (longitude == null || latitude == null) {
             return false;
@@ -100,11 +107,5 @@ public class Constraint {
         boolean validBath = minBathroom != null && maxBathroom != null;
 
         return validLatitude && validLongitude && validBath && validBed && validPrice;
-    }
-
-    public void sanitize () {
-
-        if (minPrice == null) minPrice = maxPrice*0.9;
-        if (maxPrice == null) maxPrice = minPrice*1.1;
     }
 }
